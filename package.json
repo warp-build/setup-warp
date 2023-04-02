@@ -1,0 +1,10 @@
+{
+  "name": "setup-warp",
+  "version": "0.0.1",
+  "description": "Setup Warp in your Github Actions Workflows",
+  "main": "src/main.ts",
+  "repository": "git@github.com:warp-build/setup-warp.git",
+  "author": "Leandro Ostera <leandro@warp.build>",
+  "license": "MIT",
+  "private": true
+}
