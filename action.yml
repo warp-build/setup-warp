@@ -1,0 +1,7 @@
+name: 'setup-warp'
+description: 'Setup Warp'
+inputs:
+outputs:
+runs:
+  using: 'node16'
+  main: 'main.js'
