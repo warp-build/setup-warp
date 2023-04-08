@@ -27,14 +27,15 @@ async function latestVersion(): Promise<string> {
     headers: { Authorization: `Bearer ${repoToken()}` }
   });
 
-  let results = (await client.get<Array<Release>>("https://api.github.com/repos/warp-build/warp/releases")).result || [];
+  let releaseUrl = "https://api.github.com/repos/warp-build/warp/releases";
+  let results = (await client.get<Array<Release>>(releaseUrl)).result || [];
   let latestTag = results[0].tag_name;
 
   return latestTag;
 }
 
 async function download(version: string): Promise<string> {
-  let url = `https://github.com/warp-build/warp/releases/download/${version}/warp-${version}-${hostTriple}.tar.gz`;
+  let url = `https://github.com/warp-build/warp/releases/download/${version}/warp-${version}-${hostTriple()}.tar.gz`;
 
   let downloadPath = await tc.downloadTool(url);
 

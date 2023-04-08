@@ -55,14 +55,15 @@ function latestVersion() {
         let client = new restm.RestClient("setup-warp", "", [], {
             headers: { Authorization: `Bearer ${repoToken()}` }
         });
-        let results = (yield client.get("https://api.github.com/repos/warp-build/warp/releases")).result || [];
+        let releaseUrl = "https://api.github.com/repos/warp-build/warp/releases";
+        let results = (yield client.get(releaseUrl)).result || [];
         let latestTag = results[0].tag_name;
         return latestTag;
     });
 }
 function download(version) {
     return __awaiter(this, void 0, void 0, function* () {
-        let url = `https://github.com/warp-build/warp/releases/download/${version}/warp-${version}-${hostTriple}.tar.gz`;
+        let url = `https://github.com/warp-build/warp/releases/download/${version}/warp-${version}-${hostTriple()}.tar.gz`;
         let downloadPath = yield tc.downloadTool(url);
         let extPath = downloadPath + "-extracted";
         yield io.mkdirP(extPath);
