@@ -1,5 +1,8 @@
 import * as core from "@actions/core";
+import * as exc from "@actions/exec";
+import * as io from "@actions/io";
 import * as tc from "@actions/tool-cache";
+import * as restm from "typed-rest-client/RestClient";
 
 async function run () {
   let version = await latestVersion();
@@ -15,12 +18,16 @@ function hostTriple() {
 
 }
 
+interface Release {
+  tag_name: string;
+}
+
 async function latestVersion(): Promise<string> {
-  let client = restm.RestClient("setup-warp", "", [], {
+  let client = new restm.RestClient("setup-warp", "", [], {
     headers: { Authorization: `Bearer ${repoToken()}` }
   });
 
-  let results = await client.get("https://api.github.com/repos/warp-build/warp/releases");
+  let results = (await client.get<Array<Release>>("https://api.github.com/repos/warp-build/warp/releases")).result || [];
   let latestTag = results[0].tag_name;
 
   return latestTag;
@@ -29,7 +36,7 @@ async function latestVersion(): Promise<string> {
 async function download(version: string): Promise<string> {
   let url = `https://github.com/warp-build/warp/releases/download/${version}/warp-${version}-${hostTriple}.tar.gz`;
 
-  let tarball = await tc.downloadTool(url);
+  let downloadPath = await tc.downloadTool(url);
 
   let extPath: string = downloadPath + "-extracted";
   await io.mkdirP(extPath);
