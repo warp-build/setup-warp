@@ -1,7 +1,10 @@
 name: 'setup-warp'
 description: 'Setup Warp'
+author: 'warp-build'
 inputs:
-outputs:
+  repo-token:
+    description: 'GitHub repo token to use to avoid rate limiter'
+    default: ''
 runs:
   using: 'node16'
   main: 'main.js'
