@@ -37,6 +37,7 @@ const exc = __importStar(require("@actions/exec"));
 const io = __importStar(require("@actions/io"));
 const tc = __importStar(require("@actions/tool-cache"));
 const restm = __importStar(require("typed-rest-client/RestClient"));
+const process = require("process");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let version = yield latestVersion();
@@ -44,16 +45,38 @@ function run() {
         core.addPath(warpBin);
     });
 }
-;
 function repoToken() {
     return core.getInput("repo-token");
 }
 function hostTriple() {
+    let arch;
+    switch (process.arch) {
+        case "arm64":
+            arch = "aarch64";
+            break;
+        case "x64":
+            arch = "x86_64";
+            break;
+        default:
+            throw new Error(`Unsupported architecture ${process.arch}.`);
+    }
+    let platform;
+    switch (process.platform) {
+        case "linux":
+            platform = "unknown-linux-gnu";
+            break;
+        case "darwin":
+            platform = "apple-darwin";
+            break;
+        default:
+            throw new Error(`Unsupported platform ${process.platform}.`);
+    }
+    return `${arch}-${platform}`;
 }
 function latestVersion() {
     return __awaiter(this, void 0, void 0, function* () {
         let client = new restm.RestClient("setup-warp", "", [], {
-            headers: { Authorization: `Bearer ${repoToken()}` }
+            headers: { Authorization: `Bearer ${repoToken()}` },
         });
         let releaseUrl = "https://api.github.com/repos/warp-build/warp/releases";
         let results = (yield client.get(releaseUrl)).result || [];
