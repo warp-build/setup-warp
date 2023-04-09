@@ -9,8 +9,8 @@ const process = require("process");
 async function run() {
   let version = await latestVersion();
   let warpBin = await download(version);
-  core.debug(`PATH += ${warpBin}`);
   core.addPath(warpBin);
+  await exc.exec("warp setup");
 }
 
 function repoToken() {
