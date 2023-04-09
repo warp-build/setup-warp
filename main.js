@@ -42,6 +42,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let version = yield latestVersion();
         let warpBin = yield download(version);
+        core.debug(`PATH += ${warpBin}`);
         core.addPath(warpBin);
     });
 }
